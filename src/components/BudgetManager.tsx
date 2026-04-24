@@ -30,7 +30,8 @@ const BudgetManager: React.FC<BudgetManagerProps> = ({ userData, onUpdateBudget 
           background: 'var(--cream)',
           borderRadius: '10px',
           padding: '15px',
-          textAlign: 'center'
+          textAlign: 'center',
+          borderLeft: '4px solid var(--primary-pink)'
         }}>
           <div style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--text-dark)' }}>
             {setBudgetCount}

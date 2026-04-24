@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import type { ExpenseCategory } from '../types';
+import type { ExpenseCategory, ExpenseRecord } from '../types';
 
 interface RecordFormProps {
-  onAddExpense: (amount: number, category: ExpenseCategory) => void;
+  onAddExpense: (expense: ExpenseRecord) => void;
 }
 
 const RecordForm: React.FC<RecordFormProps> = ({ onAddExpense }) => {
@@ -16,7 +16,13 @@ const RecordForm: React.FC<RecordFormProps> = ({ onAddExpense }) => {
     
     const amountNum = parseFloat(amount);
     if (amountNum > 0) {
-      onAddExpense(amountNum, category);
+      const newExpense: ExpenseRecord = {
+        id: Date.now().toString(),
+        amount: amountNum,
+        category: category,
+        date: new Date().toISOString().split('T')[0]
+      };
+      onAddExpense(newExpense);
       setAmount('');
       setCategory('餐饮');
     }
@@ -25,7 +31,7 @@ const RecordForm: React.FC<RecordFormProps> = ({ onAddExpense }) => {
   return (
     <div className="record-form">
       <h3 className="form-title">快速记账</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="input-group">
           <label htmlFor="amount">消费金额 (元)</label>
           <input
@@ -37,7 +43,6 @@ const RecordForm: React.FC<RecordFormProps> = ({ onAddExpense }) => {
             placeholder="0.00"
             step="0.01"
             min="0"
-            required
           />
         </div>
         

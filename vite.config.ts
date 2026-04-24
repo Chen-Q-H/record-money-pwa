@@ -33,10 +33,11 @@ export default defineConfig({
         description: '小猪养成记 - 记录你的财务成长',
         theme_color: '#FFB6C1',
         background_color: '#FFB6C1',
-        display: 'standalone',
+        display: 'fullscreen',
         orientation: 'portrait',
         scope: '/',
-        start_url: '/',
+        start_url: '/?utm_source=pwa',
+        categories: ['finance', 'productivity'],
         icons: [
           {
             src: 'icon-192.png',

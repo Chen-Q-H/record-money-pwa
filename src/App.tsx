@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 import type { UserData, ExpenseRecord, Budget, StoreItem } from './types';
 import type { AppPage } from './pages/types';
+import ToastNotification from './components/ToastNotification';
 import { loadUserData, saveUserData, calculateLevel, isBudgetExceeded } from './utils';
 import HomePage from './pages/HomePage';
 import BudgetPage from './pages/BudgetPage';
@@ -16,15 +18,15 @@ function App() {
     saveUserData(userData);
   }, [userData]);
 
-  const addExpense = (amount: number, category: string) => {
+  const addExpense = (expense: ExpenseRecord) => {
     const newExpense: ExpenseRecord = {
       id: Date.now().toString(),
-      amount,
-      category: category as any,
+      amount: expense.amount,
+      category: expense.category,
       date: new Date().toISOString().split('T')[0]
     };
 
-    const newTotalPoints = userData.totalPoints + amount;
+    const newTotalPoints = userData.totalPoints + expense.amount;
     const newLevel = calculateLevel(newTotalPoints);
 
     const updatedData: UserData = {
@@ -37,9 +39,9 @@ function App() {
     setUserData(updatedData);
 
     // 检查预算超支
-    const budget = userData.budgets.find(b => b.category === category);
+    const budget = userData.budgets.find(b => b.category === expense.category);
     if (budget && isBudgetExceeded(updatedData.expenses, budget)) {
-      setShowBudgetAlert(`${category}预算已超支！`);
+      setShowBudgetAlert(`${expense.category}预算已超支！`);
       setTimeout(() => setShowBudgetAlert(null), 3000);
     }
   };
@@ -117,6 +119,7 @@ function App() {
             onAddExpense={addExpense}
             onUpdateBudget={updateBudget}
             onNavigate={handleNavigate}
+            currentPage={currentPage}
           />
         );
       case 'budget':
@@ -125,6 +128,7 @@ function App() {
             userData={userData}
             onUpdateBudget={updateBudget}
             onNavigate={handleNavigate}
+            currentPage={currentPage}
           />
         );
       case 'store':
@@ -134,6 +138,7 @@ function App() {
             onPurchaseItem={purchaseItem}
             onApplyItem={applyItem}
             onNavigate={handleNavigate}
+            currentPage={currentPage}
           />
         );
       default:
@@ -143,23 +148,12 @@ function App() {
 
   return (
     <div className="app">
-      {/* 预算超支提醒 */}
-      {showBudgetAlert && (
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'var(--danger)',
-          color: 'white',
-          padding: '10px 20px',
-          borderRadius: '10px',
-          zIndex: 1000,
-          boxShadow: '0 4px 15px rgba(255, 170, 165, 0.5)'
-        }}>
-          ⚠️ {showBudgetAlert}
-        </div>
-      )}
+      {/* 统一提示信息 */}
+      <ToastNotification 
+        message={showBudgetAlert || ''}
+        type="error"
+        visible={!!showBudgetAlert}
+      />
 
       {/* 当前页面 */}
       {renderCurrentPage()}

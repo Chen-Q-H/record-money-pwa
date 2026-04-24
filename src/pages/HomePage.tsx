@@ -1,82 +1,71 @@
 import React from 'react';
-import type { UserData, Budget } from '../types';
 import StatusBar from '../components/StatusBar';
-import RecordForm from '../components/RecordForm';
 import ExpenseStats from '../components/ExpenseStats';
+import RecordForm from '../components/RecordForm';
 import BudgetManager from '../components/BudgetManager';
+import TopNav from '../components/TopNav';
+import BottomNav from '../components/BottomNav';
+import type { UserData, ExpenseRecord, Budget } from '../types';
 
 interface HomePageProps {
   userData: UserData;
-  onAddExpense: (amount: number, category: string) => void;
+  onAddExpense: (expense: ExpenseRecord) => void;
   onUpdateBudget: (budget: Budget) => void;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: 'home' | 'budget' | 'store') => void;
+  currentPage: 'home' | 'budget' | 'store';
 }
 
 const HomePage: React.FC<HomePageProps> = ({ 
   userData, 
   onAddExpense, 
   onUpdateBudget, 
-  onNavigate 
+  onNavigate,
+  currentPage 
 }) => {
   return (
     <div className="app">
-      {/* 顶部状态栏 */}
-      <StatusBar userData={userData} />
+      <div className="page-container">
+        {/* 统一顶部导航栏 */}
+        <TopNav 
+          title="首页" 
+          showBackButton={false}
+        />
 
-      {/* 支出统计 */}
-      <ExpenseStats userData={userData} />
+        {/* 主要内容区域（可滚动） */}
+        <div className="page-content">
+          {/* 状态栏（现在是页面内容的一部分） */}
+          <StatusBar userData={userData} />
 
-      {/* 记账表单 */}
-      <RecordForm onAddExpense={onAddExpense} />
+          {/* 支出统计 */}
+          <ExpenseStats userData={userData} />
 
-      {/* 预算管理概览 */}
-      <BudgetManager userData={userData} onUpdateBudget={onUpdateBudget} />
+          {/* 记账表单 */}
+          <RecordForm onAddExpense={onAddExpense} />
 
-      {/* 底部导航 */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '10px', 
-        marginTop: 'auto',
-        padding: '10px 0'
-      }}>
-        <button 
-          className="store-btn"
-          onClick={() => onNavigate('budget')}
-          style={{ 
-            flex: 1, 
-            background: 'var(--warm-pink)',
-            fontSize: '14px',
-            padding: '12px'
-          }}
-        >
-          💰 预算管理
-        </button>
-        <button 
-          className="store-btn"
-          onClick={() => onNavigate('store')}
-          style={{ 
-            flex: 1, 
-            fontSize: '14px',
-            padding: '12px'
-          }}
-        >
-          🏪 小猪商店
-        </button>
-      </div>
-
-      {/* 装饰效果 */}
-      {userData.currentStickers.map(stickerId => (
-        <div key={stickerId} style={{
-          position: 'fixed',
-          top: Math.random() * 100 + '%',
-          left: Math.random() * 100 + '%',
-          fontSize: '30px',
-          pointerEvents: 'none',
-          zIndex: 1
-        }}>
-          🐷
+          {/* 预算管理概览 */}
+          <BudgetManager userData={userData} onUpdateBudget={onUpdateBudget} />
         </div>
-      ))}
+
+        {/* 统一底部菜单 */}
+        <BottomNav 
+          currentPage={currentPage}
+          onNavigate={onNavigate}
+        />
+
+        {/* 装饰效果 */}
+        {userData.currentStickers.map(stickerId => (
+          <div key={stickerId} style={{
+            position: 'fixed',
+            top: Math.random() * 100 + '%',
+            left: Math.random() * 100 + '%',
+            fontSize: '30px',
+            pointerEvents: 'none',
+            zIndex: 1
+          }}>
+            🐷
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
