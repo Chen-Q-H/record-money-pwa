@@ -1,4 +1,4 @@
-import type { UserData, ExpenseRecord, Budget, StoreItem, ExpenseCategory } from './types';
+import type { UserData, ExpenseRecord, Budget, ExpenseCategory } from './types';
 import { STORE_ITEMS } from './types';
 
 export const getInitialUserData = (): UserData => ({
@@ -17,8 +17,7 @@ export const getInitialUserData = (): UserData => ({
     isApplied: false
   })),
   currentTheme: 'default',
-  currentBackground: 'default',
-  currentStickers: []
+  currentBackground: 'default'
 });
 
 export const saveUserData = (data: UserData): void => {

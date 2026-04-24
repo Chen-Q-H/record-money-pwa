@@ -18,7 +18,7 @@ export interface StoreItem {
   name: string;
   price: number;
   requiredLevel: number;
-  type: 'sticker' | 'background' | 'theme';
+  type: 'background' | 'theme';
   isPurchased: boolean;
   isApplied: boolean;
 }
@@ -31,7 +31,6 @@ export interface UserData {
   storeItems: StoreItem[];
   currentTheme: string;
   currentBackground: string;
-  currentStickers: string[];
 }
 
 export const LEVEL_THRESHOLDS = {
@@ -41,15 +40,6 @@ export const LEVEL_THRESHOLDS = {
 };
 
 export const STORE_ITEMS: StoreItem[] = [
-  {
-    id: 'sticker-1',
-    name: '小猪贴纸',
-    price: 5,
-    requiredLevel: 1,
-    type: 'sticker',
-    isPurchased: false,
-    isApplied: false
-  },
   {
     id: 'background-1',
     name: '猪猪背景',

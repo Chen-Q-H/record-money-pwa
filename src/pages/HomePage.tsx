@@ -51,20 +51,6 @@ const HomePage: React.FC<HomePageProps> = ({
           currentPage={currentPage}
           onNavigate={onNavigate}
         />
-
-        {/* 装饰效果 */}
-        {userData.currentStickers.map(stickerId => (
-          <div key={stickerId} style={{
-            position: 'fixed',
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            fontSize: '30px',
-            pointerEvents: 'none',
-            zIndex: 1
-          }}>
-            🐷
-          </div>
-        ))}
       </div>
     </div>
   );

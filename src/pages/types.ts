@@ -1,1 +1,1 @@
-export type AppPage = 'home' | 'budget' | 'store';
+export type AppPage = 'home' | 'budget' | 'store' | 'expenses';

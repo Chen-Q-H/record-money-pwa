@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import type { UserData, ExpenseRecord, Budget, StoreItem } from './types';
+import type { UserData, ExpenseRecord, Budget } from './types';
 import type { AppPage } from './pages/types';
 import ToastNotification from './components/ToastNotification';
 import { loadUserData, saveUserData, calculateLevel, isBudgetExceeded } from './utils';
 import HomePage from './pages/HomePage';
 import BudgetPage from './pages/BudgetPage';
 import StorePage from './pages/StorePage';
+import ExpensesPage from './pages/ExpensesPage';
 import './App.css';
 
 function App() {
@@ -87,17 +88,12 @@ function App() {
       return storeItem;
     });
 
-    let updatedData: Partial<UserData> = { storeItems: updatedItems };
+    const updatedData: Partial<UserData> = { storeItems: updatedItems };
 
     if (item.type === 'theme') {
       updatedData.currentTheme = item.id;
     } else if (item.type === 'background') {
       updatedData.currentBackground = item.id;
-    } else if (item.type === 'sticker') {
-      const currentStickers = userData.currentStickers.includes(itemId)
-        ? userData.currentStickers.filter(id => id !== itemId)
-        : [...userData.currentStickers, itemId];
-      updatedData.currentStickers = currentStickers;
     }
 
     setUserData({
@@ -137,6 +133,14 @@ function App() {
             userData={userData}
             onPurchaseItem={purchaseItem}
             onApplyItem={applyItem}
+            onNavigate={handleNavigate}
+            currentPage={currentPage}
+          />
+        );
+      case 'expenses':
+        return (
+          <ExpensesPage
+            userData={userData}
             onNavigate={handleNavigate}
             currentPage={currentPage}
           />

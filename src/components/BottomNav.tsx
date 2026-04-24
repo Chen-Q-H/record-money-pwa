@@ -1,14 +1,15 @@
 import React from 'react';
 
 interface BottomNavProps {
-  currentPage: 'home' | 'budget' | 'store';
-  onNavigate: (page: 'home' | 'budget' | 'store') => void;
+  currentPage: 'home' | 'budget' | 'store' | 'expenses';
+  onNavigate: (page: 'home' | 'budget' | 'store' | 'expenses') => void;
 }
 
 const BottomNav: React.FC<BottomNavProps> = ({ currentPage, onNavigate }) => {
   const navItems = [
     { key: 'home', icon: '🏠', label: '首页', active: currentPage === 'home' },
     { key: 'budget', icon: '💰', label: '预算', active: currentPage === 'budget' },
+    { key: 'expenses', icon: '📊', label: '花销', active: currentPage === 'expenses' },
     { key: 'store', icon: '🏪', label: '商店', active: currentPage === 'store' },
   ];
 

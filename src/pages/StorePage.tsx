@@ -28,7 +28,6 @@ const StorePage: React.FC<StorePageProps> = ({
 
   const getItemIcon = (type: string) => {
     switch (type) {
-      case 'sticker': return '🐷';
       case 'background': return '🎨';
       case 'theme': return '💖';
       default: return '🎁';

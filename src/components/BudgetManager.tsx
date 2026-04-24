@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { UserData, Budget } from '../types';
-import { getCategoryExpenses, isBudgetExceeded } from '../utils';
+import { isBudgetExceeded } from '../utils';
 
 interface BudgetManagerProps {
   userData: UserData;
   onUpdateBudget: (budget: Budget) => void;
 }
 
-const BudgetManager: React.FC<BudgetManagerProps> = ({ userData, onUpdateBudget }) => {
+const BudgetManager: React.FC<BudgetManagerProps> = ({ userData }) => {
   // 计算超支的预算数量
   const overBudgetCount = userData.budgets.filter(budget => 
     budget.amount > 0 && isBudgetExceeded(userData.expenses, budget)
