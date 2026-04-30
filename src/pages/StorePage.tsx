@@ -7,8 +7,8 @@ interface StorePageProps {
   userData: UserData;
   onPurchaseItem: (itemId: string, quantity: number) => void;
   onApplyItem: (itemId: string) => void;
-  onNavigate: (page: 'home' | 'budget' | 'store') => void;
-  currentPage: 'home' | 'budget' | 'store';
+  onNavigate: (page: 'home' | 'budget' | 'store' | 'expenses') => void;
+  currentPage: 'home' | 'budget' | 'store' | 'expenses';
 }
 
 const StorePage: React.FC<StorePageProps> = ({ 

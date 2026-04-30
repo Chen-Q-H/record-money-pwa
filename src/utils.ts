@@ -1,4 +1,4 @@
-import type { UserData, ExpenseRecord, Budget, ExpenseCategory } from './types';
+import type { UserData, ExpenseRecord, Budget, ExpenseCategory, StoreItem } from './types';
 import { STORE_ITEMS } from './types';
 
 export const getInitialUserData = (): UserData => ({
@@ -34,7 +34,7 @@ export const loadUserData = (): UserData => {
     // 确保storeItems包含所有种子商品
     const mergedStoreItems = [...defaultData.storeItems];
     if (data.storeItems) {
-      data.storeItems.forEach((existingItem: any) => {
+      data.storeItems.forEach((existingItem: Partial<StoreItem>) => {
         const index = mergedStoreItems.findIndex(item => item.id === existingItem.id);
         if (index !== -1) {
           mergedStoreItems[index] = { ...mergedStoreItems[index], ...existingItem };
@@ -94,8 +94,14 @@ export const getCategoryExpenses = (expenses: ExpenseRecord[], category: Expense
     .reduce((sum, expense) => sum + expense.amount, 0);
 };
 
-export const isBudgetExceeded = (expenses: ExpenseRecord[], budget: Budget): boolean => {
-  if (budget.amount === 0) return false;
-  const categoryExpenses = getCategoryExpenses(expenses, budget.category);
-  return categoryExpenses > budget.amount;
+export const isBudgetExceeded = (expenses: ExpenseRecord[], budgets: Budget[]): string | null => {
+  for (const budget of budgets) {
+    if (budget.amount > 0) {
+      const categoryExpenses = getCategoryExpenses(expenses, budget.category);
+      if (categoryExpenses > budget.amount) {
+        return budget.category;
+      }
+    }
+  }
+  return null;
 };

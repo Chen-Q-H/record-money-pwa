@@ -12,8 +12,8 @@ interface HomePageProps {
   userData: UserData;
   onAddExpense: (expense: ExpenseRecord) => void;
   onUpdateBudget: (budget: Budget) => void;
-  onNavigate: (page: 'home' | 'budget' | 'store') => void;
-  currentPage: 'home' | 'budget' | 'store';
+  onNavigate: (page: 'home' | 'budget' | 'store' | 'expenses') => void;
+  currentPage: 'home' | 'budget' | 'store' | 'expenses';
 }
 
 const HomePage: React.FC<HomePageProps> = ({ 

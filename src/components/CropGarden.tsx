@@ -9,22 +9,6 @@ interface CropGardenProps {
 }
 
 const CropGarden: React.FC<CropGardenProps> = ({ crops, onSelectCrop, selectedCropId }) => {
-  // 移除原来的emoji显示函数，使用SVG组件
-
-  const getCropName = (type: string) => {
-    const names = {
-      carrot: '胡萝卜',
-      tomato: '番茄',
-      corn: '玉米'
-    };
-    return names[type as keyof typeof names] || '作物';
-  };
-
-  const getProgressText = (crop: Crop) => {
-    if (crop.stage === 3) return '已成熟';
-    return `${crop.currentExpenses}/${crop.targetExpenses}次记账`;
-  };
-
   return (
     <div className="crop-garden">
       <h3 className="garden-title">我的小菜园 🌱</h3>

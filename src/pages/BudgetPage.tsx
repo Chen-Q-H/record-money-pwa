@@ -2,13 +2,13 @@ import React from 'react';
 import TopNav from '../components/TopNav';
 import BottomNav from '../components/BottomNav';
 import type { UserData, Budget, ExpenseCategory } from '../types';
-import { getCategoryExpenses, isBudgetExceeded } from '../utils';
+import { getCategoryExpenses } from '../utils';
 
 interface BudgetPageProps {
   userData: UserData;
   onUpdateBudget: (budget: Budget) => void;
-  onNavigate: (page: 'home' | 'budget' | 'store') => void;
-  currentPage: 'home' | 'budget' | 'store';
+  onNavigate: (page: 'home' | 'budget' | 'store' | 'expenses') => void;
+  currentPage: 'home' | 'budget' | 'store' | 'expenses';
 }
 
 const BudgetPage: React.FC<BudgetPageProps> = ({ userData, onUpdateBudget, onNavigate, currentPage }) => {
@@ -56,7 +56,7 @@ const BudgetPage: React.FC<BudgetPageProps> = ({ userData, onUpdateBudget, onNav
             const budget = getBudgetForCategory(category);
             const expense = getCategoryExpense(category);
             const percentage = budget.amount > 0 ? (expense / budget.amount) * 100 : 0;
-            const isOverBudget = isBudgetExceeded(userData.expenses, budget);
+            const isOverBudget = budget.amount > 0 && expense > budget.amount;
 
             return (
               <div key={category} style={{

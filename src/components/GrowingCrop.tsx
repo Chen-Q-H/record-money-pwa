@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Crop } from '../types';
 import CropSvg from './CropSvg';
 
@@ -16,26 +16,24 @@ const GrowingCrop: React.FC<GrowingCropProps> = ({
   className = '' 
 }) => {
   const [isGrowing, setIsGrowing] = useState(false);
-  const [previousStage, setPreviousStage] = useState(crop.stage);
+  const previousStageRef = useRef(crop.stage);
 
   // 检测阶段变化，触发生长动画
   useEffect(() => {
-    if (showAnimation && crop.stage !== previousStage) {
+    if (showAnimation && crop.stage !== previousStageRef.current) {
+      const stageDiff = Math.abs(crop.stage - previousStageRef.current);
+      const animationDuration = stageDiff === 2 ? 1200 : 800;
+      
       setIsGrowing(true);
-      setPreviousStage(crop.stage);
+      previousStageRef.current = crop.stage;
       
-      // 根据阶段变化程度设置不同的动画时长
-      const stageDiff = Math.abs(crop.stage - previousStage);
-      const animationDuration = stageDiff === 2 ? 1200 : 800; // 跳级生长动画更长
-      
-      // 动画结束后重置状态
       const timer = setTimeout(() => {
         setIsGrowing(false);
       }, animationDuration);
       
       return () => clearTimeout(timer);
     }
-  }, [crop.stage, previousStage, showAnimation]);
+  }, [crop.stage, showAnimation]);
 
   const getCropName = (type: string) => {
     const names = {

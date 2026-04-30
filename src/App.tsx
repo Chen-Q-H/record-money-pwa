@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import { useState, useEffect } from 'react';
 import type { UserData, ExpenseRecord, Budget, Crop } from './types';
 import { CROP_TYPES } from './types';
 import type { AppPage } from './pages/types';
@@ -70,8 +69,8 @@ function App() {
 
     // 显示预算超支提醒
     if (budgetExceeded) {
-      setShowBudgetAlert(true);
-      setTimeout(() => setShowBudgetAlert(false), 3000);
+      setShowBudgetAlert(`${budgetExceeded} 类别预算已超支`);
+      setTimeout(() => setShowBudgetAlert(null), 3000);
     }
   };
 

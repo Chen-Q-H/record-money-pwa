@@ -1,6 +1,6 @@
 import React from 'react';
 import type { UserData, Budget } from '../types';
-import { isBudgetExceeded } from '../utils';
+import { getCategoryExpenses } from '../utils';
 
 interface BudgetManagerProps {
   userData: UserData;
@@ -10,7 +10,7 @@ interface BudgetManagerProps {
 const BudgetManager: React.FC<BudgetManagerProps> = ({ userData }) => {
   // 计算超支的预算数量
   const overBudgetCount = userData.budgets.filter(budget => 
-    budget.amount > 0 && isBudgetExceeded(userData.expenses, budget)
+    budget.amount > 0 && getCategoryExpenses(userData.expenses, budget.category) > budget.amount
   ).length;
 
   // 计算已设置预算的数量
