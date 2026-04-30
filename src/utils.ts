@@ -17,7 +17,8 @@ export const getInitialUserData = (): UserData => ({
     isApplied: false
   })),
   currentTheme: 'default',
-  currentBackground: 'default'
+  currentBackground: 'default',
+  crops: []
 });
 
 export const saveUserData = (data: UserData): void => {
@@ -27,14 +28,34 @@ export const saveUserData = (data: UserData): void => {
 export const loadUserData = (): UserData => {
   const saved = localStorage.getItem('piggy-money-data');
   if (saved) {
-    return JSON.parse(saved);
+    const data = JSON.parse(saved);
+    const defaultData = getInitialUserData();
+    
+    // 确保storeItems包含所有种子商品
+    const mergedStoreItems = [...defaultData.storeItems];
+    if (data.storeItems) {
+      data.storeItems.forEach((existingItem: any) => {
+        const index = mergedStoreItems.findIndex(item => item.id === existingItem.id);
+        if (index !== -1) {
+          mergedStoreItems[index] = { ...mergedStoreItems[index], ...existingItem };
+        }
+      });
+    }
+    
+    // 数据迁移：确保所有字段都存在
+    return {
+      ...defaultData, // 使用默认值作为基础
+      ...data, // 覆盖现有数据
+      storeItems: mergedStoreItems,
+      crops: data.crops || [] // 确保crops字段存在
+    };
   }
   return getInitialUserData();
 };
 
-export const calculateLevel = (points: number): number => {
-  if (points >= 300) return 3; // 理财大师
-  if (points >= 100) return 2; // 记账达人
+export const calculateLevel = (expenseCount: number): number => {
+  if (expenseCount >= 20) return 3; // 理财大师
+  if (expenseCount >= 10) return 2; // 记账达人
   return 1; // 记账新手
 };
 

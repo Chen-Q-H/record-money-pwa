@@ -362,6 +362,21 @@ html, body {
   border-color: var(--primary-pink);
 }
 
+.description-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--light-pink);
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+.description-input:focus {
+  border-color: var(--primary-pink);
+}
+
 .category-buttons {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -541,6 +556,14 @@ html, body {
 /* 花销页面样式 */
 .expenses-page {
   padding: 0 20px;
+  min-height: calc(100vh - 140px); /* 确保内容区域填满剩余空间 */
+  display: flex;
+  flex-direction: column;
+}
+
+.expenses-list {
+  margin-bottom: 0;
+  flex: 1; /* 让列表填满剩余空间 */
 }
 
 .expenses-summary {
@@ -575,10 +598,10 @@ html, body {
 }
 
 .expenses-list {
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
-.expense-date-group {
+.expense-date-group:not(:last-child) {
   margin-bottom: 20px;
 }
 
@@ -606,7 +629,10 @@ html, body {
 .expense-items {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+}
+
+.expense-item:not(:last-child) {
+  margin-bottom: 8px;
 }
 
 .expense-item {
@@ -651,4 +677,313 @@ html, body {
   font-size: 16px;
   font-weight: bold;
   color: var(--text-dark);
+}
+
+/* 作物园地样式 */
+.crop-garden {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.garden-title {
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.empty-garden {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-light);
+}
+
+.empty-garden-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-garden-text {
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.empty-garden-subtext {
+  font-size: 14px;
+}
+
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+}
+
+.crop-item {
+  border: 2px solid var(--light-pink);
+  border-radius: 15px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--cream);
+}
+
+.crop-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.crop-item.selected {
+  border-color: var(--primary-pink);
+  background: rgba(255, 182, 193, 0.1);
+}
+
+.crop-emoji {
+  font-size: 32px;
+  margin-bottom: 8px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crop-info {
+  font-size: 12px;
+}
+
+.crop-name {
+  font-weight: bold;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.crop-progress {
+  color: var(--text-light);
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+
+.crop-stage {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.stage-icon {
+  font-size: 10px;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+
+.stage-icon.active {
+  opacity: 1;
+}
+
+/* 记账表单中的作物选择样式 */
+.crop-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.crop-select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 2px solid var(--light-pink);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+  color: var(--text-light);
+  min-height: 60px;
+}
+
+.crop-select-btn:hover {
+  border-color: var(--primary-pink);
+}
+
+.crop-select-btn.selected {
+  border-color: var(--primary-pink);
+  background: rgba(255, 182, 193, 0.1);
+  color: var(--text-dark);
+}
+
+.crop-emoji-small {
+  font-size: 14px;
+}
+
+.crop-name-small {
+  font-weight: bold;
+}
+
+.crop-stage-indicator {
+  display: flex;
+  gap: 2px;
+}
+
+.stage-dot {
+  font-size: 8px;
+  opacity: 0.3;
+}
+
+.stage-dot.active {
+  opacity: 1;
+}
+
+/* 作物选择按钮中的SVG样式 */
+.crop-svg-select {
+  flex-shrink: 0;
+}
+
+.crop-info-select {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex: 1;
+}
+
+.crop-name-small {
+  font-weight: bold;
+  color: var(--text-dark);
+  font-size: 14px;
+}
+
+.crop-stage-indicator {
+  display: flex;
+  gap: 2px;
+}
+
+.stage-dot {
+  font-size: 10px;
+  opacity: 0.3;
+}
+
+.stage-dot.active {
+  opacity: 1;
+}
+
+/* SVG作物图案样式 */
+.crop-svg {
+  transition: all 0.5s ease-in-out;
+  transform-origin: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.crop-svg:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* 生长动画 */
+@keyframes grow {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.growing-crop {
+  animation: grow 0.8s ease-out;
+}
+
+/* 不同阶段的缩放效果 */
+.crop-svg.stage-1 {
+  transform: scale(0.8);
+}
+
+.crop-svg.stage-2 {
+  transform: scale(0.9);
+}
+
+.crop-svg.stage-3 {
+  transform: scale(1);
+}
+
+/* 生长作物组件样式 */
+.growing-crop-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.crop-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.crop-info-mini {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-light);
+  width: 100%;
+}
+
+.crop-name-mini {
+  font-weight: bold;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.crop-progress-mini {
+  margin-bottom: 4px;
+  font-size: 9px;
+}
+
+/* 生长进度条 */
+.growth-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--light-pink);
+  border-radius: 2px;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.growth-progress-fill {
+  height: 100%;
+  background: var(--primary-pink);
+  border-radius: 2px;
+  transition: width 0.5s ease-in-out;
+}
+
+/* 阶段指示器 */
+.stage-indicator-mini {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.stage-dot-mini {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--light-pink);
+  transition: background 0.3s ease;
+}
+
+.stage-dot-mini.active {
+  background: var(--primary-pink);
 }

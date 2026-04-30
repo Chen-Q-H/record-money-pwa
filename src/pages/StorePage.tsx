@@ -5,7 +5,7 @@ import type { UserData, StoreItem } from '../types';
 
 interface StorePageProps {
   userData: UserData;
-  onPurchaseItem: (itemId: string) => void;
+  onPurchaseItem: (itemId: string, quantity: number) => void;
   onApplyItem: (itemId: string) => void;
   onNavigate: (page: 'home' | 'budget' | 'store') => void;
   currentPage: 'home' | 'budget' | 'store';
@@ -19,87 +19,217 @@ const StorePage: React.FC<StorePageProps> = ({
   currentPage 
 }) => {
   const [activeTab, setActiveTab] = useState<'available' | 'purchased'>('available');
+  const [purchaseQuantity, setPurchaseQuantity] = useState<Record<string, number>>({});
 
   const availableItems = userData.storeItems.filter(item => 
-    !item.isPurchased && item.requiredLevel <= userData.level
+    item.type === 'seed' || 
+    (!item.isPurchased && item.requiredLevel <= userData.level)
   );
 
-  const purchasedItems = userData.storeItems.filter(item => item.isPurchased);
+  const purchasedItems = userData.storeItems.filter(item => 
+    (item.type === 'seed' && (item.quantity || 0) > 0) || 
+    (item.type !== 'seed' && item.isPurchased)
+  );
 
   const getItemIcon = (type: string) => {
     switch (type) {
       case 'background': return '🎨';
       case 'theme': return '💖';
+      case 'seed': return '🌱';
       default: return '🎁';
     }
   };
 
-  const renderItem = (item: StoreItem, index: number, array: StoreItem[]) => (
-    <div key={item.id} style={{
-      border: '2px solid var(--light-pink)',
-      borderRadius: '15px',
-      padding: '20px',
-      marginBottom: index === array.length - 1 ? '0' : '15px',
-      background: 'white',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-        <div>
-          <span style={{ fontSize: '24px', marginRight: '15px' }}>{getItemIcon(item.type)}</span>
-          <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{item.name}</span>
+  const getMaxPurchaseQuantity = (item: StoreItem) => {
+    return Math.floor(userData.totalPoints / item.price);
+  };
+
+  const renderItem = (item: StoreItem, index: number, array: StoreItem[], isPurchasedList: boolean) => {
+    const isSeed = item.type === 'seed';
+    const hasQuantity = isSeed && item.quantity && item.quantity > 0;
+    const maxQty = getMaxPurchaseQuantity(item);
+    const qty = purchaseQuantity[item.id] || 1;
+
+    return (
+      <div key={item.id} style={{
+        border: '2px solid var(--light-pink)',
+        borderRadius: '15px',
+        padding: '20px',
+        marginBottom: index === array.length - 1 ? '0' : '15px',
+        background: 'white',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+          <div>
+            <span style={{ fontSize: '24px', marginRight: '15px' }}>{getItemIcon(item.type)}</span>
+            <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{item.name}</span>
+          </div>
+          {!isPurchasedList && (
+            <span style={{ color: 'var(--text-light)', fontSize: '16px', fontWeight: 'bold' }}>
+              {item.price} 积分
+            </span>
+          )}
         </div>
-        <span style={{ color: 'var(--text-light)', fontSize: '16px', fontWeight: 'bold' }}>
-          {item.price} 积分
-        </span>
+        
+        {isSeed && hasQuantity && (
+          <div style={{ 
+            fontSize: '13px', 
+            color: 'var(--primary-pink)', 
+            marginBottom: '15px',
+            fontWeight: 'bold'
+          }}>
+            库存: {item.quantity} 个
+          </div>
+        )}
+        
+        {!isPurchasedList && (
+          <div style={{ fontSize: '13px', color: 'var(--text-light)', marginBottom: '15px' }}>
+            需要等级: {item.requiredLevel}
+          </div>
+        )}
+        
+        {isSeed && isPurchasedList ? (
+          <button
+            onClick={() => onApplyItem(item.id)}
+            disabled={!hasQuantity}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: hasQuantity ? 'var(--primary-pink)' : '#ccc',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              cursor: hasQuantity ? 'pointer' : 'not-allowed'
+            }}
+          >
+            种植
+          </button>
+        ) : isSeed ? (
+          <>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '10px', 
+              marginBottom: '15px' 
+            }}>
+              <span style={{ fontSize: '13px', color: 'var(--text-light)' }}>购买数量:</span>
+              <button
+                onClick={() => setPurchaseQuantity(prev => ({
+                  ...prev,
+                  [item.id]: Math.max(1, (prev[item.id] || 1) - 1)
+                }))}
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  background: 'var(--light-pink)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50%',
+                  fontSize: '18px',
+                  cursor: 'pointer'
+                }}
+              >
+                -
+              </button>
+              <span style={{ 
+                fontSize: '16px', 
+                fontWeight: 'bold', 
+                minWidth: '30px', 
+                textAlign: 'center' 
+              }}>
+                {qty}
+              </span>
+              <button
+                onClick={() => setPurchaseQuantity(prev => ({
+                  ...prev,
+                  [item.id]: Math.min(maxQty, (prev[item.id] || 1) + 1)
+                }))}
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  background: 'var(--primary-pink)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50%',
+                  fontSize: '18px',
+                  cursor: 'pointer'
+                }}
+              >
+                +
+              </button>
+              <span style={{ fontSize: '12px', color: 'var(--text-light)' }}>
+                (最多{maxQty}个)
+              </span>
+            </div>
+            <button
+              onClick={() => onPurchaseItem(item.id, qty)}
+              disabled={userData.totalPoints < item.price * qty || userData.level < item.requiredLevel}
+              style={{
+                width: '100%',
+                padding: '12px',
+                background: userData.totalPoints >= item.price * qty && userData.level >= item.requiredLevel 
+                  ? 'var(--primary-pink)' 
+                  : '#ccc',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                cursor: userData.totalPoints >= item.price * qty && userData.level >= item.requiredLevel 
+                  ? 'pointer' 
+                  : 'not-allowed'
+              }}
+            >
+              {userData.totalPoints < item.price * qty ? '积分不足' : 
+               userData.level < item.requiredLevel ? '等级不足' : `购买 ${qty} 个`}
+            </button>
+          </>
+        ) : item.isPurchased ? (
+          <button
+            onClick={() => onApplyItem(item.id)}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: item.isApplied ? 'var(--success)' : 'var(--primary-pink)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
+            {item.isApplied ? '已应用' : '应用'}
+          </button>
+        ) : (
+          <button
+            onClick={() => onPurchaseItem(item.id, 1)}
+            disabled={userData.totalPoints < item.price || userData.level < item.requiredLevel}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: userData.totalPoints >= item.price && userData.level >= item.requiredLevel 
+                ? 'var(--primary-pink)' 
+                : '#ccc',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              cursor: userData.totalPoints >= item.price && userData.level >= item.requiredLevel 
+                ? 'pointer' 
+                : 'not-allowed'
+            }}
+          >
+            {userData.totalPoints < item.price ? '积分不足' : 
+             userData.level < item.requiredLevel ? '等级不足' : '购买'}
+          </button>
+        )}
       </div>
-      
-      <div style={{ fontSize: '13px', color: 'var(--text-light)', marginBottom: '15px' }}>
-        需要等级: {item.requiredLevel}
-      </div>
-      
-      {!item.isPurchased ? (
-        <button
-          onClick={() => onPurchaseItem(item.id)}
-          disabled={userData.totalPoints < item.price || userData.level < item.requiredLevel}
-          style={{
-            width: '100%',
-            padding: '12px',
-            background: userData.totalPoints >= item.price && userData.level >= item.requiredLevel 
-              ? 'var(--primary-pink)' 
-              : '#ccc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            cursor: userData.totalPoints >= item.price && userData.level >= item.requiredLevel 
-              ? 'pointer' 
-              : 'not-allowed'
-          }}
-        >
-          {userData.totalPoints < item.price ? '积分不足' : 
-           userData.level < item.requiredLevel ? '等级不足' : '购买'}
-        </button>
-      ) : (
-        <button
-          onClick={() => onApplyItem(item.id)}
-          style={{
-            width: '100%',
-            padding: '12px',
-            background: item.isApplied ? 'var(--success)' : 'var(--primary-pink)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          {item.isApplied ? '已应用' : '应用'}
-        </button>
-      )}
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="app">
@@ -185,7 +315,7 @@ const StorePage: React.FC<StorePageProps> = ({
           {/* 商品列表 */}
           {activeTab === 'available' ? (
             availableItems.length > 0 ? (
-              availableItems.map((item, index, array) => renderItem(item, index, array))
+              availableItems.map((item, index, array) => renderItem(item, index, array, false))
             ) : (
               <div style={{ 
                 textAlign: 'center', 
@@ -198,7 +328,7 @@ const StorePage: React.FC<StorePageProps> = ({
             )
           ) : (
             purchasedItems.length > 0 ? (
-              purchasedItems.map((item, index, array) => renderItem(item, index, array))
+              purchasedItems.map((item, index, array) => renderItem(item, index, array, true))
             ) : (
               <div style={{ 
                 textAlign: 'center', 

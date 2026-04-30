@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import StatusBar from '../components/StatusBar';
 import ExpenseStats from '../components/ExpenseStats';
 import RecordForm from '../components/RecordForm';
 import BudgetManager from '../components/BudgetManager';
+import CropGarden from '../components/CropGarden';
 import TopNav from '../components/TopNav';
 import BottomNav from '../components/BottomNav';
 import type { UserData, ExpenseRecord, Budget } from '../types';
@@ -22,6 +23,8 @@ const HomePage: React.FC<HomePageProps> = ({
   onNavigate,
   currentPage 
 }) => {
+  const [selectedCropId, setSelectedCropId] = useState<string>('');
+
   return (
     <div className="app">
       <div className="page-container">
@@ -36,11 +39,21 @@ const HomePage: React.FC<HomePageProps> = ({
           {/* 状态栏（现在是页面内容的一部分） */}
           <StatusBar userData={userData} />
 
+          {/* 作物园地 */}
+          <CropGarden 
+            crops={userData.crops} 
+            onSelectCrop={setSelectedCropId}
+            selectedCropId={selectedCropId}
+          />
+
           {/* 支出统计 */}
           <ExpenseStats userData={userData} />
 
           {/* 记账表单 */}
-          <RecordForm onAddExpense={onAddExpense} />
+          <RecordForm 
+            onAddExpense={onAddExpense} 
+            crops={userData.crops}
+          />
 
           {/* 预算管理概览 */}
           <BudgetManager userData={userData} onUpdateBudget={onUpdateBudget} />
